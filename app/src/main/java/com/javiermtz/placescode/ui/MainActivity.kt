@@ -1,4 +1,4 @@
-package com.javiermtz.placescode
+package com.javiermtz.placescode.ui
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -10,8 +10,12 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import com.google.android.libraries.places.api.Places
+import com.javiermtz.placescode.R
+import com.javiermtz.placescode.R.id
 import com.javiermtz.placescode.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
   private lateinit var appBarConfiguration: AppBarConfiguration
@@ -30,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     setSupportActionBar(binding.toolbar)
 
-    val navController = findNavController(R.id.nav_host_fragment_content_main)
+    val navController = findNavController(id.nav_host_fragment_content_main)
     appBarConfiguration = AppBarConfiguration(navController.graph)
     setupActionBarWithNavController(navController, appBarConfiguration)
 
@@ -51,13 +55,13 @@ class MainActivity : AppCompatActivity() {
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     return when (item.itemId) {
-      R.id.action_settings -> true
+      id.action_settings -> true
       else -> super.onOptionsItemSelected(item)
     }
   }
 
   override fun onSupportNavigateUp(): Boolean {
-    val navController = findNavController(R.id.nav_host_fragment_content_main)
+    val navController = findNavController(id.nav_host_fragment_content_main)
     return navController.navigateUp(appBarConfiguration)
         || super.onSupportNavigateUp()
   }
