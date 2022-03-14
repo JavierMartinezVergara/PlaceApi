@@ -4,6 +4,7 @@ plugins {
   id 'kotlin-kapt'
   id 'dagger.hilt.android.plugin'
   id 'androidx.navigation.safeargs'
+  id 'kotlinx-serialization'
 }
 
 def localProperties = new Properties()
@@ -130,4 +131,7 @@ dependencies {
   kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
   implementation 'com.google.android.gms:play-services-maps:18.0.1'
+
+  // KotlinX Serialization
+  implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0"
 }

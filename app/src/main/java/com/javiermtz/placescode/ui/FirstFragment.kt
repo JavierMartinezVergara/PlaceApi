@@ -1,8 +1,7 @@
-package com.javiermtz.placescode
+package com.javiermtz.placescode.ui
 
 import android.Manifest
 import android.Manifest.permission
-import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -15,12 +14,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMapOptions
@@ -33,18 +32,23 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceLikelihood
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.snackbar.Snackbar
+import com.javiermtz.placescode.R
 import com.javiermtz.placescode.databinding.FragmentFirstBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
+@AndroidEntryPoint
 class FirstFragment : Fragment(), OnMapReadyCallback {
 
-  private var _binding: FragmentFirstBinding? = null
+  private lateinit var binding: FragmentFirstBinding
+
+  private val viewModel : PlacesViewModel by viewModels()
 
   // This property is only valid between onCreateView and
   // onDestroyView.
-  private val binding get() = _binding!!
 
   private lateinit var map : GoogleMap
 
@@ -64,7 +68,7 @@ class FirstFragment : Fragment(), OnMapReadyCallback {
     savedInstanceState: Bundle?
   ): View {
 
-    _binding = FragmentFirstBinding.inflate(inflater, container, false)
+    binding = FragmentFirstBinding.inflate(inflater, container, false)
 
     mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     return binding.root
@@ -101,13 +105,16 @@ class FirstFragment : Fragment(), OnMapReadyCallback {
 
     onClickRequestPermission(requestPermissionLauncher)
 
+    viewModel.data.observe(viewLifecycleOwner, {
+      Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_LONG).show()
+    })
+
 //
 
   }
 
   override fun onDestroyView() {
     super.onDestroyView()
-    _binding = null
   }
 
   override fun onMapReady(googleMap: GoogleMap) {
@@ -148,28 +155,11 @@ class FirstFragment : Fragment(), OnMapReadyCallback {
           map.addMarker(MarkerOptions().position(latLog))
           latLog = LatLng(it.latitude, it.longitude)
           map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLog, 18F))
+          viewModel.getPlaces("${it.latitude},${it.longitude}")
+
         }
         mFusedLocationClient.lastLocation.addOnFailureListener {
 
-        }
-
-        val placeResponse = placesClient.findCurrentPlace(request)
-        placeResponse.addOnCompleteListener { task ->
-          if (task.isSuccessful) {
-            val response = task.result
-            for (placeLikelihood: PlaceLikelihood in response?.placeLikelihoods ?: emptyList()) {
-              val t = response.placeLikelihoods[5].place.latLng
-              map.moveCamera(CameraUpdateFactory.newLatLngZoom(t!!, 18F))
-              map.addMarker(MarkerOptions().position(t))
-
-              Log.e("TEST", "Place found: ${placeLikelihood.place}")
-            }
-          } else {
-            val exception = task.exception
-            if (exception is ApiException) {
-              Log.e("TEST", "Place not found: ${exception.statusCode}")
-            }
-          }
         }
       }
 
