@@ -9,6 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.libraries.places.api.Places
 import com.javiermtz.placescode.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +19,11 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    Places.initialize(
+      applicationContext,
+      "AIzaSyBQIHwK0QYtagOKx9e0G89f4Z_NBn8kNo0"
+    )
 
     binding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(binding.root)
