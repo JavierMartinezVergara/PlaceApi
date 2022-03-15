@@ -4,27 +4,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SecondFragment"
+    tools:context=".presentation.ui.DetailPlaceFragment"
     >
 
-  <TextView
-      android:id="@+id/textview_second"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintBottom_toTopOf="@id/button_second"
+  <ImageView
+      android:id="@+id/imagePlace"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:contentDescription="descriptionImage"
+      app:layout_constraintBottom_toTopOf="@+id/guideline3"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       />
 
-  <Button
-      android:id="@+id/button_second"
-      android:layout_width="wrap_content"
+
+  <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline3"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/previous"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent=".33"
+      />
+
+  <androidx.cardview.widget.CardView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:cardElevation="8dp"
+      app:cardCornerRadius="8dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/textview_second"
-      />
+      app:layout_constraintTop_toBottomOf="@+id/imagePlace"
+      >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+      <TextView
+          android:id="@+id/namePlace"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent"
+          android:textSize="16dp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="Nombre"
+          />
+
+      <TextView
+          android:id="@+id/coordenadesPlace"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="16dp"
+          android:textStyle="bold"
+          android:layout_marginTop="8dp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/namePlace"
+          tools:text="Coordenadas"
+          />
+
+      <TextView
+          android:id="@+id/ratingPlace"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="16dp"
+          android:textStyle="bold"
+          android:layout_marginTop="8dp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/coordenadesPlace"
+          tools:text="Rating"
+          />
+
+      <TextView
+          android:id="@+id/descriptionPlace"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="16dp"
+          android:textStyle="bold"
+          android:layout_marginTop="8dp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/ratingPlace"
+          tools:text="Rating"
+          />
+
+
+
+      <Button
+          android:id="@+id/button_second"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/save_to_favorite"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+  </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

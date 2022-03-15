@@ -1,4 +1,4 @@
-package com.javiermtz.placescode.ui
+package com.javiermtz.placescode.presentation.ui
 
 import android.Manifest
 import android.Manifest.permission
@@ -6,7 +6,6 @@ import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts.RequestPermissi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import com.google.android.gms.common.api.ApiException
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -29,23 +28,26 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.PlaceLikelihood
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.snackbar.Snackbar
 import com.javiermtz.placescode.R
 import com.javiermtz.placescode.databinding.FragmentFirstBinding
+import com.javiermtz.placescode.presentation.adapter.PlaceAdapter
+import com.javiermtz.placescode.presentation.adapter.PlaceAdapter.OnClickListener
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 @AndroidEntryPoint
-class FirstFragment : Fragment(), OnMapReadyCallback {
+class MapsPlaceFragment : Fragment(), OnMapReadyCallback {
 
   private lateinit var binding: FragmentFirstBinding
 
-  private val viewModel : PlacesViewModel by viewModels()
+  private val viewModel : PlacesViewModel by activityViewModels()
+
+  private lateinit var adapter: PlaceAdapter
 
   // This property is only valid between onCreateView and
   // onDestroyView.
@@ -63,24 +65,9 @@ class FirstFragment : Fragment(), OnMapReadyCallback {
   // Use fields to define the data types to return.
   val placeFields: List<Place.Field> = listOf(Place.Field.NAME, Place.Field.LAT_LNG)
 
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-
-    binding = FragmentFirstBinding.inflate(inflater, container, false)
-
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
     mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-    return binding.root
-
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    supportMap = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-    supportMap.getMapAsync(this)
-
     // Create a new PlacesClient instance
     placesClient = Places.createClient(requireContext())
     // Initialize the SDK
@@ -105,8 +92,44 @@ class FirstFragment : Fragment(), OnMapReadyCallback {
 
     onClickRequestPermission(requestPermissionLauncher)
 
+  }
+
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View {
+
+    binding = FragmentFirstBinding.inflate(inflater, container, false)
+
+
+
+       return binding.root
+
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    adapter = PlaceAdapter(OnClickListener { placeItem ->
+      val latLng = LatLng(placeItem.lat, placeItem.lng)
+      map.addMarker(MarkerOptions()
+        .position(latLng))
+      map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19F))
+
+      val action = MapsPlaceFragmentDirections.actionFirstFragmentToSecondFragment(placeItem)
+      findNavController().navigate(action)
+
+    })
+
+    binding.recyclerPlaces.adapter = adapter
+
+    supportMap = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+    supportMap.getMapAsync(this)
+
+
+
     viewModel.data.observe(viewLifecycleOwner, {
-      Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_LONG).show()
+      adapter.submitList(it)
     })
 
 //
