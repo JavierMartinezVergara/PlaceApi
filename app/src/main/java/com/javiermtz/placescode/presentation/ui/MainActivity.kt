@@ -1,4 +1,4 @@
-package com.javiermtz.placescode.ui
+package com.javiermtz.placescode.presentation.ui
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -9,7 +9,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import com.google.android.libraries.places.api.Places
+import com.javiermtz.placescode.BuildConfig
 import com.javiermtz.placescode.R
 import com.javiermtz.placescode.R.id
 import com.javiermtz.placescode.databinding.ActivityMainBinding
@@ -17,6 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+  private val viewModel : PlacesViewModel by viewModels()
 
   private lateinit var appBarConfiguration: AppBarConfiguration
   private lateinit var binding: ActivityMainBinding
@@ -26,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     Places.initialize(
       applicationContext,
-      "AIzaSyBQIHwK0QYtagOKx9e0G89f4Z_NBn8kNo0"
+      BuildConfig.API_KEY
     )
 
     binding = ActivityMainBinding.inflate(layoutInflater)
@@ -54,8 +59,12 @@ class MainActivity : AppCompatActivity() {
     // Handle action bar item clicks here. The action bar will
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
+    val navController = findNavController(R.id.nav_host_fragment_content_main)
     return when (item.itemId) {
-      id.action_settings -> true
+      id.action_settings -> {
+        navController.navigate(R.id.favoritesPlaces)
+        true
+      }
       else -> super.onOptionsItemSelected(item)
     }
   }

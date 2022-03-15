@@ -7,22 +7,36 @@
 
   <fragment
       android:id="@+id/FirstFragment"
-      android:name="com.javiermtz.placescode.ui.FirstFragment"
+      android:name="com.javiermtz.placescode.presentation.ui.MapsPlaceFragment"
       android:label="@string/first_fragment_label"
       tools:layout="@layout/fragment_first">
 
     <action
         android:id="@+id/action_FirstFragment_to_SecondFragment"
-        app:destination="@id/SecondFragment" />
+        app:destination="@id/SecondFragment" >
+    </action>
+    <argument
+        android:name="placeItem"
+        app:argType="com.javiermtz.placescode.domain.models.Place"/>
   </fragment>
   <fragment
       android:id="@+id/SecondFragment"
-      android:name="com.javiermtz.placescode.ui.SecondFragment"
+      android:name="com.javiermtz.placescode.presentation.ui.DetailPlaceFragment"
       android:label="@string/second_fragment_label"
       tools:layout="@layout/fragment_second">
 
-    <action
-        android:id="@+id/action_SecondFragment_to_FirstFragment"
-        app:destination="@id/FirstFragment" />
+    <argument
+        android:name="placeItem"
+        app:argType="com.javiermtz.placescode.domain.models.Place"/>
   </fragment>
+  <fragment
+      android:id="@+id/favoritesPlaces"
+      android:name="com.javiermtz.placescode.presentation.ui.FavoritePlaceFragment"
+      android:label="@string/favorites"
+      tools:layout="@layout/fragment_favorites">
+    <action
+        android:id="@+id/action_favoritesPlaces_pop_including_FirstFragment"
+        app:popUpTo="@id/FirstFragment" />
+  </fragment>
+
 </navigation>
